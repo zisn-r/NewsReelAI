@@ -1,7 +1,7 @@
 // lib/gemini.ts
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { loadPromptConfig } from './prompts';
-import { GeminiResponse } from './types';
+import { GenerateNewsResponse } from './types';
 
 const MAX_OUTPUT_TOKENS = 4096;
 const MAX_RETRIES = 1;
@@ -54,9 +54,9 @@ export async function validateTopic(topic: string): Promise<{
  * Main entry-point: validates the topic, then calls Gemini to produce
  * a video-ready news script with cited sources.
  */
-export async function generateNewsScript(
+export async function generateDualScriptAndSources(
   topic: string,
-): Promise<GeminiResponse> {
+): Promise<GenerateNewsResponse> {
   // Step 1 — quick validation
   const validation = await validateTopic(topic);
   if (!validation.is_valid || !validation.is_safe) {
@@ -64,7 +64,7 @@ export async function generateNewsScript(
   }
 
   // Step 2 — load file-based prompts
-  const config = await loadPromptConfig('news_to_script', topic);
+  const config = await loadPromptConfig('dual_script_generation', topic);
 
   // Step 3 — call Gemini with retry
   const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
@@ -108,10 +108,10 @@ export async function generateNewsScript(
       // Attempt to repair truncated JSON before parsing
       jsonText = repairJson(jsonText);
 
-      const parsed = JSON.parse(jsonText) as GeminiResponse;
+      const parsed = JSON.parse(jsonText) as GenerateNewsResponse;
 
       // Step 5 — basic output validation
-      if (!parsed.script || !parsed.sources || parsed.sources.length < 2) {
+      if (!parsed.script_visual || !parsed.script_readable || !parsed.sources || parsed.sources.length < 2) {
         throw new Error('Invalid response structure from Gemini');
       }
 

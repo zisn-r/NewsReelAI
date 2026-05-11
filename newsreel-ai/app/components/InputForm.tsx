@@ -1,7 +1,7 @@
 // app/components/InputForm.tsx
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 interface InputFormProps {
   onSubmit: (topic: string) => Promise<void>;
@@ -11,12 +11,23 @@ interface InputFormProps {
 export default function InputForm({ onSubmit, isLoading }: InputFormProps) {
   const [topic, setTopic] = useState('');
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (topic.trim().length >= 3) {
+  const handleSubmit = async (e?: React.FormEvent) => {
+    e?.preventDefault();
+    if (topic.trim().length >= 3 && !isLoading) {
       await onSubmit(topic.trim());
     }
   };
+
+  // Keyboard shortcut: CMD/CTRL + Enter
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+        handleSubmit();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [topic, isLoading]);
 
   const suggestions = [
     'AI regulation',
@@ -28,7 +39,8 @@ export default function InputForm({ onSubmit, isLoading }: InputFormProps) {
   return (
     <form onSubmit={handleSubmit} className="w-full max-w-xl mx-auto space-y-6">
       {/* ── Input field ─────────────────────────────────── */}
-      <div className="glass-card glow-ring p-1 transition-all duration-300">
+      <div className="surface-card p-1 transition-standard focus-surgical">
+        <label htmlFor="topic-input" className="sr-only">News Topic</label>
         <input
           id="topic-input"
           type="text"
@@ -37,22 +49,24 @@ export default function InputForm({ onSubmit, isLoading }: InputFormProps) {
           placeholder="What news story interests you?"
           maxLength={100}
           disabled={isLoading}
+          aria-label="Enter news topic"
           className="w-full bg-transparent px-5 py-4 text-lg text-[var(--foreground)]
                      placeholder-[var(--muted)] outline-none disabled:opacity-40"
         />
       </div>
 
       {/* ── Quick-pick suggestions ─────────────────────── */}
-      <div className="flex flex-wrap gap-2 justify-center">
+      <div className="flex flex-wrap gap-2 justify-center" role="group" aria-label="Topic suggestions">
         {suggestions.map((s) => (
           <button
             key={s}
             type="button"
             disabled={isLoading}
             onClick={() => setTopic(s)}
+            aria-label={`Select suggestion: ${s}`}
             className="px-3 py-1.5 text-xs rounded-full border border-[var(--border)]
                        text-[var(--muted)] hover:border-[var(--accent)] hover:text-[var(--accent-light)]
-                       transition-colors disabled:opacity-30"
+                       transition-standard disabled:opacity-30 focus:outline-none focus:ring-1 focus:ring-[var(--accent)]"
           >
             {s}
           </button>
@@ -60,18 +74,24 @@ export default function InputForm({ onSubmit, isLoading }: InputFormProps) {
       </div>
 
       {/* ── Submit button ──────────────────────────────── */}
-      <button
-        id="submit-btn"
-        type="submit"
-        disabled={isLoading || topic.trim().length < 3}
-        className="w-full py-4 rounded-xl font-semibold text-white text-lg
-                   bg-[var(--accent)] hover:bg-[var(--accent-light)]
-                   disabled:opacity-30 disabled:cursor-not-allowed
-                   transition-all duration-200 active:scale-[0.98]
-                   shadow-[0_0_24px_rgba(99,102,241,0.3)]"
-      >
-        {isLoading ? 'Generating…' : '🎬  Generate News Video'}
-      </button>
+      <div className="space-y-2">
+        <button
+          id="submit-btn"
+          type="submit"
+          disabled={isLoading || topic.trim().length < 3}
+          aria-busy={isLoading}
+          className="w-full py-4 rounded-xl font-bold text-white text-lg
+                     bg-[var(--accent)] hover:bg-[var(--accent-light)]
+                     disabled:opacity-30 disabled:cursor-not-allowed
+                     transition-standard active:scale-[0.98]
+                     border border-[var(--border)] uppercase tracking-widest"
+        >
+          {isLoading ? 'Generating…' : 'Generate News Video'}
+        </button>
+        <p className="text-[10px] text-center text-[var(--muted)] uppercase tracking-tighter">
+          Press <kbd className="font-sans px-1 border border-[var(--border)] rounded">⌘</kbd> + <kbd className="font-sans px-1 border border-[var(--border)] rounded">Enter</kbd> to generate
+        </p>
+      </div>
     </form>
   );
 }

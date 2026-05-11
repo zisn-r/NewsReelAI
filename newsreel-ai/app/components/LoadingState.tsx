@@ -4,10 +4,10 @@
 import { useEffect, useState } from 'react';
 
 const STEPS = [
-  { key: 'validate', icon: '🔎', label: 'Validating topic…' },
-  { key: 'research', icon: '📰', label: 'Researching sources…' },
-  { key: 'script',   icon: '✍️',  label: 'Writing video script…' },
-  { key: 'video',    icon: '🎬', label: 'Generating cinematic video…' },
+  { key: 'validate', label: 'Validating topic…' },
+  { key: 'research', label: 'Researching sources…' },
+  { key: 'script',   label: 'Writing video script…' },
+  { key: 'video',    label: 'Generating cinematic video…' },
 ] as const;
 
 interface LoadingStateProps {
@@ -36,13 +36,14 @@ export default function LoadingState({ isVisible }: LoadingStateProps) {
   if (!isVisible) return null;
 
   return (
-    <div className="glass-card max-w-md mx-auto p-8 flex flex-col items-center gap-6
-                    animate-[fadeIn_.3s_ease]">
-      {/* Spinner */}
-      <div className="spinner" />
-
+    <div 
+      className="surface-card max-w-md mx-auto p-8 flex flex-col items-center gap-6 animate-[fadeIn_.3s_ease]"
+      role="status"
+      aria-live="polite"
+      aria-busy="true"
+    >
       {/* Step list */}
-      <ul className="w-full space-y-3">
+      <ul className="w-full space-y-4">
         {STEPS.map((step, i) => {
           const isDone    = i < stepIdx;
           const isCurrent = i === stepIdx;
@@ -50,21 +51,31 @@ export default function LoadingState({ isVisible }: LoadingStateProps) {
           return (
             <li
               key={step.key}
-              className={`flex items-center gap-3 text-sm transition-opacity duration-300 ${
+              className={`flex items-center gap-4 text-sm transition-opacity duration-300 ${
                 isDone ? 'opacity-40' : isCurrent ? 'opacity-100' : 'opacity-20'
               }`}
+              aria-current={isCurrent ? 'step' : undefined}
             >
-              <span className="text-base">{isDone ? '✅' : step.icon}</span>
+              <div className="w-5 h-5 flex items-center justify-center">
+                {isDone ? (
+                  <span className="text-[var(--success)] font-bold" aria-label="Completed">✓</span>
+                ) : isCurrent ? (
+                  <div className="spinner !w-4 !h-4 !border-2" aria-label="In progress" />
+                ) : (
+                  <div className="w-4 h-4 rounded-full border border-[var(--border)]" aria-label="Pending" />
+                )}
+              </div>
               <span className={isCurrent ? 'text-[var(--accent-light)] font-medium' : ''}>
                 {step.label}
               </span>
-              {isCurrent && <span className="pulse-dot ml-auto" />}
             </li>
           );
         })}
       </ul>
 
-      <p className="text-xs text-[var(--muted)]">This usually takes 15–45 seconds</p>
+      <p className="text-xs text-[var(--muted)] border-t border-[var(--border)] pt-4 w-full text-center">
+        Expected duration: 15–45 seconds
+      </p>
     </div>
   );
 }

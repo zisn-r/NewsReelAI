@@ -11,32 +11,25 @@ export default function SourcesCard({ sources }: SourcesCardProps) {
   if (!sources || sources.length === 0) return null;
 
   return (
-    <div className="w-full max-w-2xl mx-auto glass-card p-6 space-y-4">
+    <div className="w-full max-w-2xl mx-auto surface-card p-6 space-y-4">
       {/* Header */}
-      <div className="flex items-center gap-2">
-        <span className="inline-flex items-center justify-center w-6 h-6 rounded-full
-                        bg-[var(--success)]/15 text-[var(--success)] text-xs font-bold">
-          ✓
-        </span>
-        <h3 className="font-semibold text-base">
-          Sources <span className="text-[var(--muted)] font-normal">({sources.length})</span>
+      <div className="flex items-center gap-2 border-b border-[var(--border)] pb-3">
+        <h3 className="font-semibold text-base uppercase tracking-wider text-[var(--muted)]">
+          Sources <span className="font-normal">({sources.length})</span>
         </h3>
       </div>
 
       {/* Source list */}
-      <ul className="space-y-3">
+      <ul className="space-y-2">
         {sources.map((source, i) => (
           <li
             key={i}
-            className="flex items-start gap-3 p-3 rounded-lg bg-[var(--surface)]
-                       border border-[var(--border)] hover:border-[var(--accent)]
+            className="flex items-start gap-4 p-3 border border-[var(--border)] hover:border-[var(--accent)]
                        transition-colors group"
           >
-            {/* Index badge */}
-            <span className="flex-shrink-0 w-6 h-6 mt-0.5 rounded-full text-xs font-semibold
-                           flex items-center justify-center
-                           bg-[var(--accent)]/10 text-[var(--accent-light)]
-                           group-hover:bg-[var(--accent)]/20 transition-colors">
+            {/* Index */}
+            <span className="flex-shrink-0 w-4 h-4 mt-0.5 text-xs font-mono
+                           flex items-center justify-center text-[var(--muted)]">
               {i + 1}
             </span>
 
@@ -45,26 +38,26 @@ export default function SourcesCard({ sources }: SourcesCardProps) {
                 href={source.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-sm font-medium text-[var(--accent-light)] hover:underline
-                           line-clamp-2"
+                className="text-sm font-medium text-[var(--foreground)] hover:text-[var(--accent-light)]
+                           line-clamp-2 transition-colors"
               >
                 {source.title}
               </a>
 
-              <p className="mt-1 text-xs text-[var(--muted)] truncate">
+              <p className="mt-1 text-[10px] text-[var(--muted)] uppercase tracking-tight truncate">
                 {source.publication || source.author}
                 {source.publication && source.author && ` · ${source.author}`}
                 {source.date && ` · ${source.date}`}
               </p>
             </div>
 
-            {/* Credibility badge */}
+            {/* Credibility tag */}
             {source.credibility && (
               <span
-                className={`flex-shrink-0 mt-0.5 px-2 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wider ${
+                className={`flex-shrink-0 mt-0.5 px-1.5 py-0.5 border text-[9px] font-semibold uppercase tracking-wider ${
                   source.credibility === 'tier1'
-                    ? 'bg-[var(--success)]/10 text-[var(--success)]'
-                    : 'bg-yellow-500/10 text-yellow-400'
+                    ? 'border-[var(--success)]/30 text-[var(--success)]'
+                    : 'border-yellow-500/30 text-yellow-400'
                 }`}
               >
                 {source.credibility}

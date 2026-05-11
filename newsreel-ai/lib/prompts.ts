@@ -9,7 +9,7 @@ interface PromptConfig {
 }
 
 export async function loadPromptConfig(
-  workflowName: 'news_to_script' | 'topic_validation',
+  workflowName: 'news_to_script' | 'topic_validation' | 'dual_script_generation',
   topic: string
 ): Promise<PromptConfig> {
   const promptDir = path.join(process.cwd(), 'prompts');
@@ -40,6 +40,12 @@ export async function loadPromptConfig(
   if (workflowName === 'topic_validation') {
     system = readPrompt(promptDir, 'system/journalist_role_v1.0.md');
     user = readPrompt(promptDir, 'user/topic_validation_v1.0.md')
+      .replace(/{topic}/g, topic);
+  }
+
+  if (workflowName === 'dual_script_generation') {
+    system = ''; // Handled in the main user prompt
+    user = readPrompt(promptDir, 'user/dual_script_generation_v1.0.md')
       .replace(/{topic}/g, topic);
   }
 

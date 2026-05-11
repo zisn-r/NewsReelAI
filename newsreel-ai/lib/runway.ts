@@ -108,3 +108,53 @@ export async function generateVideo(scriptText: string): Promise<string> {
 
   return videoUrl;
 }
+
+/**
+ * Kicks off a text-to-speech task using Runway Gen-4.5.
+ * Returns the TTS task ID.
+ */
+export async function createRunwayTTSTask(text: string): Promise<string> {
+  const response = await fetch(`${RUNWAY_API_BASE}/text_to_speech`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${RUNWAY_API_KEY}`,
+      'Content-Type': 'application/json',
+      'X-Runway-Version': '2024-11-06',
+    },
+    body: JSON.stringify({
+      model: 'gen4.5',
+      text,
+      voice: 'default',
+      output_format: 'mp3',
+    }),
+  });
+
+  if (!response.ok) {
+    const errorBody = await response.text();
+    throw new Error(`Runway TTS API error (${response.status}): ${errorBody}`);
+  }
+
+  const data = await response.json();
+  return data.id; // tts_task_id
+}
+
+/**
+ * Fetches the current status of a Runway TTS task.
+ * Note: RunwayTask can handle TTS since output structure is similar or we can use any.
+ * Wait, TTS task output is { audio_url: string } instead of string[]. Let's just return any.
+ */
+export async function getRunwayTTSStatus(taskId: string): Promise<any> {
+  const response = await fetch(`${RUNWAY_API_BASE}/tasks/${taskId}`, {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${RUNWAY_API_KEY}`,
+      'X-Runway-Version': '2024-11-06',
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to get TTS task status: ${response.statusText}`);
+  }
+
+  return await response.json();
+}

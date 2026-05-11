@@ -9,21 +9,24 @@ export interface NewsSource {
   credibility?: 'tier1' | 'tier2';
 }
 
-export interface GeminiResponse {
+export interface GenerateNewsResponse {
   success: boolean;
-  script?: string;
-  visual_prompt?: string;
-  title?: string;
-  hook?: string;
-  estimated_duration?: number;
+  script_visual: string;        // For Runway (100-150 chars)
+  script_readable: string;      // For user reading (250 words)
+  title: string;                // One-line headline
   sources: NewsSource[];
-  metadata?: {
+  metadata: {
     topic: string;
-    generated_at: string;
-    word_count: number;
-    source_count: number;
+    word_count_readable: number;
+    char_count_visual: number;
     confidence: number;
   };
+}
+
+export interface TTSResponse {
+  audio_url: string;
+  tts_task_id: string;
+  generated_at: string;
 }
 
 export interface RunwayTask {
@@ -34,10 +37,14 @@ export interface RunwayTask {
 }
 
 export interface GenerateResult {
-  videoUrl: string;
-  sources: NewsSource[];
-  generationTime: number;
+  success: boolean;
+  script_readable: string;
   title: string;
+  sources: NewsSource[];
+  video_task_id: string;
+  video_status: string;
+  tts_ready: boolean;
+  generated_at: number;
 }
 
 export interface GenerateError {
