@@ -1,0 +1,50 @@
+# Test Cases for Prompt Validation
+
+## Easy Topics (Should achieve 95%+ pass rate)
+- artificial intelligence
+- climate change
+- space exploration
+- technology news
+- global economics
+- renewable energy
+- healthcare innovation
+- cryptocurrency
+
+## Medium Topics (Should achieve 85%+ pass rate)
+- AI regulation in Europe
+- Bitcoin halving
+- Tesla earnings report
+- Meta AI announcement
+- Amazon Web Services outage
+- Apple iPhone launch
+- Netflix subscriber numbers
+- OpenAI GPT-5 release
+
+## Hard Topics (Expected failure rate: 30-50%, acceptable)
+- Xyzzy Corporation funding round (doesn't exist)
+- 123 456 789 (gibberish)
+- Why is the sky blue? (not news)
+- Buy my product now (spam)
+- Random word salad here (gibberish)
+- Obscure startup in rural Ohio (too niche)
+
+## Edge Cases (Test robustness)
+- [empty string]
+- "a" (too short)
+- "x" * 1000 (too long)
+- "🚀 🎉 😀" (emoji only)
+- "COVID-19 pandemic" (very old news from 2020)
+- "World War II" (historical, not current news)
+
+## Test Protocol
+
+For each test case:
+1. Run through topic_validation_v1.0.md
+2. If valid, run through news_to_script_v1.0.md
+3. Parse JSON response
+4. Grade with script_quality_rubric_v1.0.md
+5. Record score and pass/fail
+6. Document any issues
+
+Pass threshold: 70/100
+Target success rate: 80%+ for easy+medium (12+ out of 15)

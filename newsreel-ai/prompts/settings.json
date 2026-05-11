@@ -1,0 +1,40 @@
+{
+  "model": {
+    "name": "gemini-2.5-flash",
+    "reason": "Fastest, most deterministic, good quality"
+  },
+  "generation_config": {
+    "temperature": 0.3,
+    "reason": "Low temp = consistent, deterministic responses (critical for news)",
+    "topP": 0.8,
+    "topK": 40,
+    "maxOutputTokens": 1500,
+    "reason_maxTokens": "Prevents runaway generation, 1500 tokens ≈ 350 words"
+  },
+  "timeout_seconds": 5,
+  "reason_timeout": "Gemini should respond quickly; >5s means something is wrong",
+  "retry_policy": {
+    "max_retries": 2,
+    "backoff_seconds": 2,
+    "reason": "Retry on timeout or invalid JSON"
+  },
+  "response_validation": {
+    "json_only": true,
+    "reason": "All responses must be valid JSON for parsing"
+  },
+  "fallback_topics": [
+    "Latest technology news",
+    "Climate change developments",
+    "Space exploration news",
+    "Global economics",
+    "Artificial intelligence advancements",
+    "Healthcare innovation",
+    "Renewable energy news"
+  ],
+  "credible_publications": [
+    "Reuters", "AP", "BBC", "Bloomberg", "CNN",
+    "TechCrunch", "The Verge", "CNBC", "WSJ", "Financial Times",
+    "New York Times", "Washington Post", "Guardian", "NPR",
+    "Nature", "Science", "The Lancet"
+  ]
+}
