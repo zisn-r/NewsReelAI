@@ -46,23 +46,23 @@ export default function VideoPlayer({ taskId, initialStatus, title }: VideoPlaye
   }, [taskId, videoUrl, status]);
 
   return (
-    <div className="w-full max-w-2xl mx-auto surface-card overflow-hidden">
+    <div className="w-full h-full surface-card overflow-hidden flex flex-col border border-[var(--border)] rounded-xl">
       {/* Title bar */}
       {title && (
-        <div className="px-5 py-3 border-b border-[var(--border)]">
-          <h2 className="text-lg font-semibold truncate">{title}</h2>
+        <div className="px-5 py-3 border-b border-[var(--border)] bg-[var(--surface-light)]">
+          <h2 className="text-sm font-bold uppercase tracking-widest text-[var(--muted)] truncate">{title}</h2>
         </div>
       )}
 
       {/* Video Area */}
-      <div className="w-full aspect-video bg-black relative flex items-center justify-center">
+      <div className="w-full flex-1 bg-black relative flex items-center justify-center min-h-[240px]">
         {videoUrl ? (
           <video
             src={videoUrl}
             controls
             autoPlay
             playsInline
-            className="w-full h-full object-cover"
+            className="w-full h-full object-contain"
           />
         ) : error ? (
           <div className="text-[var(--error)] text-center p-4">
@@ -71,8 +71,8 @@ export default function VideoPlayer({ taskId, initialStatus, title }: VideoPlaye
         ) : (
           <div className="flex flex-col items-center gap-4 text-[var(--muted)]">
             <div className="w-8 h-8 rounded-full border-2 border-[var(--muted)] border-t-[var(--accent)] animate-spin" />
-            <p className="text-sm font-medium tracking-wide">
-              {status === 'QUEUED' ? 'Waiting in queue...' : 'Generating video (~4 mins)...'}
+            <p className="text-xs font-bold uppercase tracking-widest">
+              {status === 'QUEUED' ? 'Waiting in queue...' : 'Generating video...'}
             </p>
           </div>
         )}

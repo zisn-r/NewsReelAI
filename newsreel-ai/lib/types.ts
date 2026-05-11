@@ -12,7 +12,7 @@ export interface NewsSource {
 export interface GenerateNewsResponse {
   success: boolean;
   script_visual: string;        // For Runway (100-150 chars)
-  script_readable: string;      // For user reading (250 words)
+  script_readable: string;      // For user reading (100 words)
   title: string;                // One-line headline
   sources: NewsSource[];
   metadata: {

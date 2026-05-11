@@ -75,6 +75,52 @@ html { scroll-behavior: smooth; }
   0% { transform: translateX(0%); }
   100% { transform: translateX(-50%); }
 }
-.animate-marquee {
-  animation: marquee 40s linear infinite;
+
+/* ── Results Dashboard ─────────────────────────────────────────── */
+.results-dashboard {
+  display: grid;
+  grid-template-areas:
+    "video script"
+    "button sources";
+  grid-template-columns: 1fr 1.8fr;
+  grid-template-rows: 1.2fr 1fr;
+  gap: 1.25rem;
+  width: 100%;
+  max-width: 1600px;
+  margin: 0 auto;
+  height: 100%;
+}
+
+.grid-area-video { grid-area: video; }
+.grid-area-script { grid-area: script; }
+.grid-area-button { grid-area: button; }
+.grid-area-sources { grid-area: sources; }
+
+@media (max-width: 1024px) {
+  .results-dashboard {
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    gap: 1.5rem;
+  }
+  
+  .grid-area-video { order: 1; }
+  .grid-area-script { order: 2; }
+  .grid-area-sources { order: 3; }
+  .grid-area-button { order: 4; }
+}
+
+/* ── Custom Scrollbar ──────────────────────────────────────────── */
+.scroll-custom::-webkit-scrollbar {
+  width: 6px;
+}
+.scroll-custom::-webkit-scrollbar-track {
+  background: transparent;
+}
+.scroll-custom::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 10px;
+}
+.scroll-custom::-webkit-scrollbar-thumb:hover {
+  background: var(--muted);
 }

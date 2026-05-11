@@ -23,14 +23,13 @@ SCRIPT A: Visual Description (for video generation)
 
 SCRIPT B: News Summary (for human reading/listening)
 ==================================================
-- EXACTLY 250 words (count the words, this is critical)
+- EXACTLY 100 words (count the words, this is critical)
 - Professional news tone (like BBC News, Reuters, or AP)
 - Include: facts, dates, names, statistics, credible information
 - Structure REQUIRED:
   * Hook (first 20 words): Grab attention with surprising fact or question
-  * Context (next 100 words): Background, explanation, key details
-  * Impact (next 100 words): Why this matters, implications, consequences
-  * Why it matters (last 30 words): Insight or call-to-action
+  * Context (next 50 words): Background, explanation, key details
+  * Impact (next 20 words): Why this matters, implications, consequences
 - Make it suitable for text-to-speech (natural sentence flow, no abbreviations spelled out, clear pronunciation)
 - NO visual descriptions, ONLY information
 - Example opening: "On May 8th, 2026, the International Energy Agency announced that global renewable energy capacity reached an unprecedented milestone..."
@@ -57,7 +56,7 @@ VALIDATION:
 ===========
 Before returning, verify:
 - Script A is under 150 characters (count: include spaces)
-- Script B is exactly 250 words (count: exclude punctuation)
+- Script B is exactly 100 words (count: exclude punctuation)
 - All sources are real publications
 - Script A has NO facts or dialogue
 - Script B has NO visual descriptions
@@ -68,7 +67,7 @@ RETURN ONLY VALID JSON (no markdown, no extra text):
 {
   "success": true,
   "script_visual": "string (100-150 chars)",
-  "script_readable": "string (exactly 250 words)",
+  "script_readable": "string (exactly 100 words)",
   "title": "string (one-line headline under 100 chars)",
   "sources": [
     {
@@ -82,7 +81,7 @@ RETURN ONLY VALID JSON (no markdown, no extra text):
   ],
   "metadata": {
     "topic": "{topic}",
-    "word_count_readable": 250,
+    "word_count_readable": 100,
     "char_count_visual": 145,
     "confidence": 0.92
   }

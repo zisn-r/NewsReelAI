@@ -76,8 +76,10 @@ export default function Home() {
     }
   };
 
+  const isDashboardView = !!result && !isLoading;
+
   return (
-    <div className="relative w-full min-h-screen overflow-x-hidden flex flex-col">
+    <div className={`relative w-full overflow-x-hidden flex flex-col ${isDashboardView ? 'h-screen overflow-hidden' : 'min-h-screen'}`}>
       {/* ── Background Marquee (Full Bleed) ──────────────── */}
       <div className="absolute inset-0 pointer-events-none opacity-[0.03] select-none flex items-center justify-center overflow-hidden z-0" aria-hidden="true">
         <div className="flex animate-marquee whitespace-nowrap text-[15vw] font-black uppercase tracking-tighter text-[var(--foreground)]">
@@ -90,20 +92,22 @@ export default function Home() {
         </div>
       </div>
 
-      <main className="relative z-10 flex-1 w-full max-w-5xl mx-auto px-4 py-16 md:py-32 flex flex-col items-center justify-center">
-        <div className="w-full flex flex-col items-center gap-16 md:gap-24">
+      <main className={`relative z-10 flex-1 w-full max-w-7xl mx-auto px-6 flex flex-col items-center justify-center ${isDashboardView ? 'py-6 h-full' : 'py-12'}`}>
+        <div className={`w-full flex flex-col items-center ${isDashboardView ? 'gap-6 h-full overflow-hidden' : 'gap-12'}`}>
           {/* ── Header ──────────────────────────────────────── */}
-          <div className="text-center space-y-6 max-w-[65ch]">
-            <h1 className="text-5xl md:text-6xl font-bold tracking-tight text-[var(--foreground)] leading-[1.1]">
-              Newsreel AI
-            </h1>
-            <p className="text-lg md:text-xl text-[var(--muted)] leading-relaxed">
-              Turn any news topic into a cinematic, source-cited video in seconds.
-            </p>
-          </div>
+          {!result && (
+            <div className="text-center space-y-6 max-w-[65ch] animate-[fadeIn_.5s_ease]">
+              <h1 className="text-5xl md:text-6xl font-bold tracking-tight text-[var(--foreground)] leading-[1.1]">
+                Newsreel AI
+              </h1>
+              <p className="text-lg md:text-xl text-[var(--muted)] leading-relaxed">
+                Turn any news topic into a cinematic, source-cited video in seconds.
+              </p>
+            </div>
+          )}
 
           {/* ── Main Content Area ───────────────────────────── */}
-          <div className="w-full flex flex-col items-center">
+          <div className={`w-full flex flex-col items-center ${isDashboardView ? 'flex-1 overflow-hidden' : ''}`}>
             {/* ── Input Section ───────────────────────────────── */}
             {!result && !isLoading && (
               <div className="w-full animate-[fadeIn_.5s_ease]">
@@ -159,37 +163,70 @@ export default function Home() {
 
             {/* ── Results Section ─────────────────────────────── */}
             {result && !isLoading && (
-              <div className="w-full flex flex-col gap-12 animate-[fadeIn_.5s_ease]">
-                {/* Title */}
-                <div className="text-center mb-4">
-                  <h2 className="text-2xl md:text-3xl font-bold">{result.title}</h2>
+              <div className="w-full h-full flex flex-col gap-6 animate-[fadeIn_.5s_ease] overflow-hidden">
+                {/* Header for Results */}
+                <div className="flex items-end justify-between border-b border-[var(--border)] pb-4 flex-shrink-0">
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-3 mb-1">
+                      <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[var(--accent)]">
+                        Generation Complete
+                      </span>
+                      <span className="w-1 h-1 rounded-full bg-[var(--border)]" />
+                      <span className="text-[10px] text-[var(--muted)] uppercase tracking-tight">
+                        {result.video_task_id.slice(0, 8)}
+                      </span>
+                    </div>
+                    <h2 className="text-xl md:text-3xl font-bold truncate leading-tight">{result.title}</h2>
+                  </div>
+                  <div className="hidden md:block text-right">
+                     <p className="text-[10px] text-[var(--muted)] uppercase tracking-widest font-bold">
+                        Newsreel AI Summary
+                     </p>
+                     <p className="text-[10px] text-[var(--muted)]/50 uppercase tracking-tight mt-1">
+                        {new Date().toLocaleDateString()}
+                     </p>
+                  </div>
                 </div>
 
-                {/* Script and TTS */}
-                <div className="w-full">
-                  <ScriptCard script={result.script_readable} />
-                </div>
+                {/* Dashboard Columns */}
+                <div className="results-dashboard flex-1 overflow-hidden">
+                  {/* Left Column: Video + Action */}
+                  <div className="dashboard-column dashboard-column-left">
+                    <div className="grid-area-video overflow-hidden">
+                      <VideoPlayer 
+                        taskId={result.video_task_id} 
+                        initialStatus={result.video_status} 
+                      />
+                    </div>
 
-                {/* Sources */}
-                <div className="w-full">
-                  <SourcesCard sources={result.sources} />
-                </div>
+                    {/* Small Button Area */}
+                    <div className="grid-area-button flex items-center justify-center surface-card border-dashed border-[var(--border)] bg-[var(--background)]/30 overflow-hidden">
+                      <button
+                        onClick={() => setResult(null)}
+                        className="group flex items-center gap-4 transition-standard px-6 w-full h-full hover:bg-[var(--accent)]/5"
+                      >
+                        <div className="w-8 h-8 rounded-full border border-[var(--border)] flex items-center justify-center group-hover:border-[var(--accent)] group-hover:bg-[var(--accent)] group-hover:text-white transition-standard flex-shrink-0">
+                          <span className="text-lg group-hover:scale-110 transition-standard">+</span>
+                        </div>
+                        <div className="text-left">
+                          <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[var(--muted)] group-hover:text-[var(--foreground)] transition-standard">
+                            Create Another Reel
+                          </span>
+                        </div>
+                      </button>
+                    </div>
+                  </div>
 
-                {/* Video Player */}
-                <div className="w-full border-t border-[var(--border)] pt-12">
-                  <VideoPlayer 
-                    taskId={result.video_task_id} 
-                    initialStatus={result.video_status} 
-                  />
-                </div>
-                
-                <div className="text-center pt-8">
-                  <button
-                    onClick={() => setResult(null)}
-                    className="px-8 py-4 rounded-xl font-bold bg-[var(--surface)] border border-[var(--border)] hover:border-[var(--accent)] hover:text-[var(--accent-light)] transition-all uppercase tracking-widest text-xs"
-                  >
-                    Create another video
-                  </button>
+                  {/* Right Column: Content */}
+                  <div className="dashboard-column dashboard-column-right">
+                    <div className="grid-area-script overflow-hidden">
+                      <ScriptCard script={result.script_readable} />
+                    </div>
+
+                    <div className="grid-area-sources overflow-hidden">
+                      <SourcesCard sources={result.sources} />
+                    </div>
+                  </div>
                 </div>
               </div>
             )}

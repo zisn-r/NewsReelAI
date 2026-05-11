@@ -43,8 +43,8 @@ export default function ScriptCard({ script }: ScriptCardProps) {
   };
 
   return (
-    <div className="w-full max-w-2xl mx-auto surface-card p-6 border border-[var(--border)] rounded-xl">
-      <div className="flex items-center justify-between border-b border-[var(--border)] pb-4 mb-4">
+    <div className="w-full h-full surface-card flex flex-col border border-[var(--border)] rounded-xl overflow-hidden">
+      <div className="flex items-center justify-between border-b border-[var(--border)] p-5 pb-4">
         <h3 className="text-sm font-bold uppercase tracking-widest text-[var(--muted)]">
           Script Summary
         </h3>
@@ -74,19 +74,21 @@ export default function ScriptCard({ script }: ScriptCardProps) {
         </div>
       </div>
 
-      <div className="prose prose-invert max-w-none">
-        <p className="text-[15px] leading-relaxed text-[var(--foreground)] whitespace-pre-wrap">
-          {script}
-        </p>
-      </div>
-
-      {error && (
-        <div className="mt-4 p-3 bg-[var(--error)]/10 text-[var(--error)] rounded-lg text-sm font-medium">
-          {error}
+      <div className="flex-1 overflow-y-auto p-6 scroll-custom">
+        <div className="prose prose-invert max-w-none">
+          <p className="text-[15px] leading-relaxed text-[var(--foreground)] whitespace-pre-wrap">
+            {script}
+          </p>
         </div>
-      )}
 
-      {audioUrl && <AudioPlayer audioUrl={audioUrl} />}
+        {error && (
+          <div className="mt-4 p-3 bg-[var(--error)]/10 text-[var(--error)] rounded-lg text-sm font-medium">
+            {error}
+          </div>
+        )}
+
+        {audioUrl && <AudioPlayer audioUrl={audioUrl} />}
+      </div>
     </div>
   );
 }
