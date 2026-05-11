@@ -110,10 +110,13 @@ export async function generateVideo(scriptText: string): Promise<string> {
 }
 
 /**
- * Kicks off a text-to-speech task using Runway Gen-4.5.
+ * Kicks off a text-to-speech task using Runway's eleven_multilingual_v2 model.
  * Returns the TTS task ID.
  */
 export async function createRunwayTTSTask(text: string): Promise<string> {
+  // Runway TTS enforces a 1–1000 character limit on promptText
+  const promptText = text.slice(0, 1000);
+
   const response = await fetch(`${RUNWAY_API_BASE}/text_to_speech`, {
     method: 'POST',
     headers: {
@@ -122,10 +125,12 @@ export async function createRunwayTTSTask(text: string): Promise<string> {
       'X-Runway-Version': '2024-11-06',
     },
     body: JSON.stringify({
-      model: 'gen4.5',
-      text,
-      voice: 'default',
-      output_format: 'mp3',
+      model: 'eleven_multilingual_v2',
+      promptText,
+      voice: {
+        type: 'runway-preset',
+        presetId: 'Leslie',
+      },
     }),
   });
 
